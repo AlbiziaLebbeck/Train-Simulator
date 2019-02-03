@@ -1,13 +1,14 @@
 import matplotlib.pyplot as plt
+import pygame
 from Settings import *
 from Station import Station
 
 class Train():
-    def __init__(self,railway,ax,destination,station_index=-1):
-        self.capacity = 1000
-        self.max_speed = 100*1000/3600
+    def __init__(self,railway,destination,station_index=-1):
+        self.capacity = 300
+        self.max_speed = 60*1000/3600
         self.accel = self.max_speed/5
-        self.stop_time = 3*60
+        self.stop_time = 5*60
         self.door_time = 1
         self.passenger_time = 1
         self.destination = destination
@@ -29,20 +30,21 @@ class Train():
         self.closing_time = self.stop_time - self.door_time 
 
         if self.railway == 0:
-            pos_y = 25 - 4
-            self.pos = distance*(no_station+1)
+            self.pos_y = 415
+            self.pos = distance[-1]
         else:
-            pos_y = 35 - 4 
+            self.pos_y = 390
             self.pos = 0
 
         if station_index > -1:
             self.pos = Station.stations[self.station_index].pos
             self.next_time = self.stop_time
 
+        self.font = pygame.font.SysFont(None, 18)
 
-        self.rectangle_train = plt.Rectangle((self.pos-self.width/2, pos_y), self.width, 8, color='green')
-        ax.add_patch(self.rectangle_train)
-        self.text_train = ax.text(self.pos-self.width/4,pos_y+1,str(self.speed),fontsize=15)
+        # self.rectangle_train = plt.Rectangle((self.pos-self.width/2, pos_y), self.width, 8, color='green')
+        # ax.add_patch(self.rectangle_train)
+        # self.text_train = ax.text(self.pos-self.width/4,pos_y+1,str(self.speed),fontsize=15)
     
     def update_train(self,current_time):
         if self.state == "stop":
@@ -66,13 +68,6 @@ class Train():
                     self.station_index = self.station_index + 1
                     if self.station_index == no_station:
                         self.break_pos = self.destination.pos - (self.max_speed**2)/(2*self.accel)
-                        # self.railway = 0
-                        # self.rectangle_train.set_y(25 - 4)
-                        # self.text_train.set_y(25 - 3)
-                        # self.next_time = current_time + self.stop_time
-                        # self.entrance_time = current_time + self.door_time
-                        # self.exit_time = current_time + self.door_time
-                        # self.closing_time = self.next_time - self.door_time 
                     else:
                         self.break_pos = Station.stations[self.station_index].pos - (self.max_speed**2)/(2*self.accel)
                         print(Station.stations[self.station_index].pos)
@@ -82,13 +77,6 @@ class Train():
                     self.station_index = self.station_index - 1
                     if self.station_index == -1:
                         self.break_pos = self.destination.pos + (self.max_speed**2)/(2*self.accel)
-                        # self.railway = 1
-                        # self.rectangle_train.set_y(35 - 4)
-                        # self.text_train.set_y(35 - 3)
-                        # self.next_time = current_time + self.stop_time
-                        # self.entrance_time = current_time + self.door_time
-                        # self.exit_time = current_time + self.door_time
-                        # self.closing_time = self.next_time - self.door_time 
                     else:
                         self.break_pos = Station.stations[self.station_index].pos + (self.max_speed**2)/(2*self.accel)
         if self.state == "move":
@@ -123,10 +111,9 @@ class Train():
                 else:
                     if self.pos >= self.destination.pos:
                         self.destination.num_train = self.destination.num_train + 1
-                        self.destination.text_train_park.set_text(str(self.destination.num_train))
-                        self.rectangle_train.set_visible(False)
-                        self.text_train.set_visible(False)
-                        print('delete')
+                        # self.destination.text_train_park.set_text(str(self.destination.num_train))
+                        # self.rectangle_train.set_visible(False)
+                        # self.text_train.set_visible(False)
                         return 'park'
             else:
                 self.pos = self.pos - self.speed
@@ -142,12 +129,17 @@ class Train():
                 else:
                     if self.pos <= self.destination.pos:
                         self.destination.num_train = self.destination.num_train + 1
-                        self.destination.text_train_park.set_text(str(self.destination.num_train))
-                        self.rectangle_train.set_visible(False)
-                        self.text_train.set_visible(False)
+                        # self.destination.text_train_park.set_text(str(self.destination.num_train))
+                        # self.rectangle_train.set_visible(False)
+                        # self.text_train.set_visible(False)
                         return 'park'
 
-        self.rectangle_train.set_x(self.pos-self.width/2)
-        self.text_train.set_x(self.pos-self.width/4)
-        self.text_train.set_text(str(len(self.passenger)))
+        # self.rectangle_train.set_x(self.pos-self.width/2)
+        # self.text_train.set_x(self.pos-self.width/4)
+        # self.text_train.set_text(str(len(self.passenger)))
         # self.text_train.set_text(str(self.speed/1000*3600))
+    
+    def draw(self,screen,train_img,offset):
+        screen.blit(train_img,(offset+40-68+self.pos/scale,self.pos_y))
+        text = self.font.render(str(len(self.passenger)), True, (0, 0, 128))
+        screen.blit(text,(offset+40+self.pos/scale, self.pos_y-10))
