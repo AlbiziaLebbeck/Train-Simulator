@@ -8,4 +8,4 @@ name = ['National Stadium','Siam','Ratchadamri','Sala Daeng','Chong Nonsi','Sura
     ,'Saphan Taksin','Krung Thonburi','Wongwian Yai','Pho Nimit'\
     ,'Talat Phlu','Wutthakat','Bang Wa']
 
-scale = 3
+scale = 2

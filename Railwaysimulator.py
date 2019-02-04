@@ -11,7 +11,8 @@ current_sim_time = 0
 
 pygame.init()
 pygame.display.set_caption("Train Simulator")
-screen = pygame.display.set_mode((1280,720))
+screen = pygame.display.set_mode((1280,720),pygame.HWSURFACE|pygame.DOUBLEBUF|pygame.FULLSCREEN)
+# screen = pygame.display.set_mode((1280,720), pygame.HWSURFACE|pygame.DOUBLEBUF|pygame.RESIZABLE)
 offset = 0
 
 train_img = pygame.transform.scale(pygame.image.load('img/train.png').convert(),(136,15))
@@ -27,7 +28,7 @@ train_img.set_colorkey((157,196,153))
 
 stations = []
 for i in range(no_station):
-    Station.stations.append(Station(i,distance[i+1],name[i]))
+    Station.stations.append(Station(i,distance[i+1],name[i],1/10))
 
 trains = []
 
@@ -72,6 +73,9 @@ while current_sim_time < simulation_time and running:
                 shift_speed = 2
             if event.key == pygame.K_RIGHT:
                 shift_speed = -2
+            
+            if event.key == pygame.K_ESCAPE:
+                running = False
         
         if event.type == pygame.KEYUP:
             shift_speed = 0

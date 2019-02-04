@@ -4,13 +4,13 @@ from Settings import *
 from Station import Station
 
 class Train():
-    def __init__(self,railway,destination,station_index=-1):
-        self.capacity = 300
-        self.max_speed = 60*1000/3600
-        self.accel = self.max_speed/5
-        self.stop_time = 5*60
+    def __init__(self,railway,destination,capacity = 400,max_speed=60,station_index=-1):
+        self.capacity = capacity
+        self.max_speed = max_speed*1000/3600
+        self.accel = self.max_speed/10
         self.door_time = 1
         self.passenger_time = 1
+        self.stop_time = self.passenger_time*self.capacity+2*self.door_time
         self.destination = destination
 
         if station_index == -1 and railway == 0:
@@ -140,6 +140,7 @@ class Train():
         # self.text_train.set_text(str(self.speed/1000*3600))
     
     def draw(self,screen,train_img,offset):
-        screen.blit(train_img,(offset+40-68+self.pos/scale,self.pos_y))
-        text = self.font.render(str(len(self.passenger)), True, (0, 0, 128))
-        screen.blit(text,(offset+40+self.pos/scale, self.pos_y-10))
+        if offset+40-68+self.pos/scale > -68 and offset+40-68+self.pos/scale < 1280:
+            screen.blit(train_img,(offset+40-68+self.pos/scale,self.pos_y))
+            text = self.font.render(str(len(self.passenger)), True, (0, 0, 128))
+            screen.blit(text,(offset+40+self.pos/scale, self.pos_y-10))
