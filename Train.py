@@ -30,10 +30,10 @@ class Train():
         self.closing_time = self.stop_time - self.door_time 
 
         if self.railway == 0:
-            self.pos_y = 415
+            self.pos_y = 455
             self.pos = distance[-1]
         else:
-            self.pos_y = 390
+            self.pos_y = 375
             self.pos = 0
 
         if station_index > -1:
@@ -140,7 +140,7 @@ class Train():
         # self.text_train.set_text(str(self.speed/1000*3600))
     
     def draw(self,screen,train_img,offset):
-        if offset+40-68+self.pos/scale > -68 and offset+40-68+self.pos/scale < 1280:
+        if offset+40-68+self.pos/scale > -400 and offset+40-68+self.pos/scale < 1280:
             screen.blit(train_img,(offset+40-68+self.pos/scale,self.pos_y))
             text = self.font.render(str(len(self.passenger)), True, (0, 0, 128))
-            screen.blit(text,(offset+40+self.pos/scale, self.pos_y-10))
+            screen.blit(text,(offset+40+self.pos/scale, self.pos_y-25))

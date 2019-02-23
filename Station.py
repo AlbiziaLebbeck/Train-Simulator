@@ -52,13 +52,16 @@ class Station():
     def draw(self,screen,offset):
         # pygame.draw.rect(screen, (255,0,0), pygame.Rect(40+self.pos/(2*distance+(no_station-1)*distance)*1200, 380, 20, 20))
         # pygame.draw.rect(screen, (255,0,0), pygame.Rect(40+self.pos/(2*distance+(no_station-1)*distance)*1200, 420, 20, 20))
-        if offset+40-20+self.pos/scale > -80 and offset+40-20+self.pos/scale <= 1280+40:
-            screen.blit(self.station_img,(offset+40-60+self.pos/scale,375))
-            screen.blit(self.station_img,(offset+40-20+self.pos/scale,375))
-            screen.blit(self.station_img,(offset+40+20+self.pos/scale,375))
+        if offset+40-20+self.pos/scale > -400 and offset+40-20+self.pos/scale <= 1280+40:
+            screen.blit(self.station_img,(offset+40-50+self.pos/scale,370))
+            screen.blit(self.station_img,(offset+40+self.pos/scale,370))
+            # screen.blit(self.station_img,(offset+40+20+self.pos/scale,370))
+            screen.blit(self.station_img,(offset+40-50+self.pos/scale,450))
+            screen.blit(self.station_img,(offset+40+self.pos/scale,450))
+            # screen.blit(self.station_img,(offset+40+20+self.pos/scale,370))
             text = self.font.render(self.name, True, (0, 128, 0))
-            screen.blit(text,(offset+40-40+self.pos/scale, 340))
+            screen.blit(text,(offset+40-40+self.pos/scale, 330))
             text = self.font.render(str(len(self.platform1)), True, (0, 128, 0))
-            screen.blit(text,(offset+40-40+self.pos/scale, 360))
+            screen.blit(text,(offset+40-40+self.pos/scale, 350))
             text = self.font.render(str(len(self.platform0)), True, (0, 128, 0))
-            screen.blit(text,(offset+40-40+self.pos/scale, 460))
+            screen.blit(text,(offset+40-40+self.pos/scale, 430))

@@ -11,12 +11,15 @@ current_sim_time = 0
 
 pygame.init()
 pygame.display.set_caption("Train Simulator")
-screen = pygame.display.set_mode((1280,720),pygame.HWSURFACE|pygame.DOUBLEBUF|pygame.FULLSCREEN)
-# screen = pygame.display.set_mode((1280,720), pygame.HWSURFACE|pygame.DOUBLEBUF|pygame.RESIZABLE)
+# screen = pygame.display.set_mode((1280,720),pygame.HWSURFACE|pygame.DOUBLEBUF|pygame.FULLSCREEN)
+screen = pygame.display.set_mode((1280,720), pygame.HWSURFACE|pygame.DOUBLEBUF)
 offset = 0
 
-train_img = pygame.transform.scale(pygame.image.load('img/train.png').convert(),(136,15))
-train_img.set_colorkey((157,196,153))
+# train_img = pygame.transform.scale(pygame.image.load('img/train.png').convert(),(215,20))
+train_img = pygame.image.load('img/train.png').convert()
+train_img.set_colorkey((253,236,166))
+
+sky_img = pygame.image.load('img/sky.png').convert()
 
 # fig = plt.figure(figsize=(15,5))
 # ax = plt.axes()
@@ -32,22 +35,22 @@ for i in range(no_station):
 
 trains = []
 
-Depot.start = Depot(10,trains,type='start')
-Depot.end = Depot(10,trains,type='end')
+Depot.start = Depot(15,trains,type='start')
+Depot.end = Depot(15,trains,type='end')
 
 # railway1 = plt.Line2D([0,(no_station+1)*distance],[25,25],color='black',linewidth=3)
 # ax.add_line(railway1)
 
 def draw_railway(screen,offset):
     railway = pygame.image.load('img/railway.png').convert()
-    railway.set_colorkey((157,196,153))
+    railway.set_colorkey((255,255,255))
 
     for i in range(int(distance[-1]/scale/200)+1):
         if offset+40+200*i >= 1280:
             break
         if offset+40+200*i > -200 and offset+40+200*i < 1280:
-            screen.blit(railway,(offset+40+200*i,395))
-            screen.blit(railway,(offset+40+200*i,420))
+            screen.blit(railway,(offset+40+200*i,400))
+            screen.blit(railway,(offset+40+200*i,480))
 
 # train = pygame.transform.scale(pygame.image.load('img/train.png').convert(),(100,10))
 # train.set_colorkey((157,196,153))
@@ -83,6 +86,7 @@ while current_sim_time < simulation_time and running:
         offset += shift_speed
 
     screen.fill((255,255,255))
+    screen.blit(sky_img,(0-20+offset*0.03,0))
 
     Depot.start.update(current_sim_time)
     Depot.end.update(current_sim_time)
@@ -91,14 +95,14 @@ while current_sim_time < simulation_time and running:
         Station.stations[i].update_platform(current_sim_time)
         Station.stations[i].draw(screen,offset)
 
-    draw_railway(screen,offset)
-
     for train in trains:
         r = train.update_train(current_sim_time)
         if r == 'park':
             trains.remove(train)
         else:
             train.draw(screen,train_img,offset)
+
+    draw_railway(screen,offset)
 
     pygame.display.update()
 

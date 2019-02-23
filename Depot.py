@@ -12,7 +12,7 @@ class Depot():
         self.trains = trains
         # self.ax = ax
 
-        self.train_duration = 10*60
+        self.train_duration = 15*60
 
         self.min_train = 0
 
