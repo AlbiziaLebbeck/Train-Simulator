@@ -7,12 +7,12 @@ class Depot():
     start = None
     end =None
 
-    def __init__(self,num_train,trains,type='start'):
-        self.num_train = num_train
+    def __init__(self,train_duration,trains,pos,type='start'):
+        self.num_train = 100
         self.trains = trains
         # self.ax = ax
 
-        self.train_duration = 15*60
+        self.train_duration = train_duration*60
 
         self.min_train = 0
 
@@ -25,8 +25,8 @@ class Depot():
             self.pos = 0 
             pos_x = 0-self.width
         else:
-            self.pos = distance[-1]
-            pos_x = distance[-1]
+            self.pos = pos
+            pos_x = pos
 
         # self.rectangle_train_park = plt.Rectangle((pos_x, pos_y), self.width, 20, color='gold')
         # ax.add_patch(self.rectangle_train_park)

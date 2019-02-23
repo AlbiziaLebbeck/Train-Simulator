@@ -6,7 +6,7 @@ from Passenger import Passenger
 
 class Station():
     stations = []
-
+    
     def __init__(self,id,pos,name=None,arrival_rate = 1/10):
         self.id = id
         self.arrival_rate = arrival_rate # arrival per seccond
@@ -29,6 +29,21 @@ class Station():
 
         self.font = pygame.font.SysFont(None, 24)
 
+        # self.arrival_0 = 0
+        # self.arrivals_0 = []
+
+        # self.arrival_1= 0
+        # self.arrivals_1 = []
+
+        # self.departure_0 = 0
+        # self.departures_0 = []
+
+        # self.departure_1 = 0
+        # self.departures_1 = []
+        
+        self.queues_0 = []
+        self.queues_1 = []
+
         # self.rectangle_platform0 = plt.Rectangle((pos-self.width/2, 15), self.width, 5, color='salmon')
         # ax.add_patch(self.rectangle_platform0)
         # self.text_platform0 = ax.text(pos-self.width/4,16,str(self.platform0),fontsize=15)
@@ -41,10 +56,21 @@ class Station():
         if(current_time >= self.inter_arrival_time0 and self.id > 0):
             self.platform0.append(Passenger(self.id,0))
             self.inter_arrival_time0 = current_time + np.random.exponential(1/self.arrival_rate)
+            # self.arrival_0 = self.arrival_0 + 1
+        # self.arrivals_0.append(self.arrival_0)
 
         if(current_time >= self.inter_arrival_time1 and self.id < no_station - 1):
             self.platform1.append(Passenger(self.id,1))
             self.inter_arrival_time1 = current_time + np.random.exponential(1/self.arrival_rate)
+            # self.arrival_1 = self.arrival_1 + 1
+        # self.arrivals_1.append(self.arrival_1)
+
+        # self.departures_0.append(self.departure_0)
+        # self.departures_1.append(self.departure_1)
+
+        self.queues_0.append(len(self.platform0))
+        self.queues_1.append(len(self.platform1))
+
 
         # self.text_platform0.set_text(str(len(self.platform0)))
         # self.text_platform1.set_text(str(len(self.platform1)))

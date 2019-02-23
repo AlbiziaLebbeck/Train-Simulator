@@ -35,8 +35,8 @@ for i in range(no_station):
 
 trains = []
 
-Depot.start = Depot(15,trains,type='start')
-Depot.end = Depot(15,trains,type='end')
+Depot.start = Depot(15,10,trains,type='start')
+Depot.end = Depot(15,10,trains,type='end')
 
 # railway1 = plt.Line2D([0,(no_station+1)*distance],[25,25],color='black',linewidth=3)
 # ax.add_line(railway1)

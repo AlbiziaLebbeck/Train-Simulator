@@ -4,17 +4,19 @@ from Settings import *
 from Station import Station
 
 class Train():
+    max_speed = 60*1000/3600
+    accel = 6*1000/3600
+    capacity = 400
+    stop_time = 300
+
     def __init__(self,railway,destination,capacity = 400,max_speed=60,station_index=-1):
-        self.capacity = capacity
-        self.max_speed = max_speed*1000/3600
-        self.accel = self.max_speed/10
         self.door_time = 1
         self.passenger_time = 1
-        self.stop_time = self.passenger_time*self.capacity+2*self.door_time
+        # self.stop_time = self.passenger_time*self.capacity+2*self.door_time
         self.destination = destination
 
         if station_index == -1 and railway == 0:
-            self.station_index = no_station
+            self.station_index = len(Station.stations)
         else:
             self.station_index = station_index
         self.railway = railway
@@ -31,7 +33,7 @@ class Train():
 
         if self.railway == 0:
             self.pos_y = 455
-            self.pos = distance[-1]
+            self.pos = Station.stations[-1].pos+200
         else:
             self.pos_y = 375
             self.pos = 0
@@ -51,8 +53,10 @@ class Train():
             if current_time >= self.entrance_time and current_time <= self.closing_time and len(self.passenger) < self.capacity:
                 if self.railway and len(Station.stations[self.station_index].platform1) > 0:
                     self.passenger.append(Station.stations[self.station_index].platform1.pop(0))
+                    # Station.stations[self.station_index].departure_0 = Station.stations[self.station_index].departure_0 + 1 
                 elif self.railway == 0 and len(Station.stations[self.station_index].platform0) > 0:
                     self.passenger.append(Station.stations[self.station_index].platform0.pop(0))
+                    # Station.stations[self.station_index].departure_1 = Station.stations[self.station_index].departure_1 + 1
                 self.entrance_time = current_time + self.passenger_time 
 
             if current_time >= self.exit_time and current_time <= self.closing_time and len(self.passenger) > 0:
@@ -66,7 +70,7 @@ class Train():
                 if self.railway:
                     self.state = "move"
                     self.station_index = self.station_index + 1
-                    if self.station_index == no_station:
+                    if self.station_index == len(Station.stations):
                         self.break_pos = self.destination.pos - (self.max_speed**2)/(2*self.accel)
                     else:
                         self.break_pos = Station.stations[self.station_index].pos - (self.max_speed**2)/(2*self.accel)
@@ -78,6 +82,7 @@ class Train():
                     if self.station_index == -1:
                         self.break_pos = self.destination.pos + (self.max_speed**2)/(2*self.accel)
                     else:
+                        print(self.station_index)
                         self.break_pos = Station.stations[self.station_index].pos + (self.max_speed**2)/(2*self.accel)
         if self.state == "move":
             if self.speed < self.max_speed:
@@ -99,7 +104,7 @@ class Train():
                 self.speed = 1
             if self.railway:        
                 self.pos = self.pos + self.speed
-                if self.station_index < no_station:
+                if self.station_index < len(Station.stations):
                     if self.pos >= Station.stations[self.station_index].pos:
                         self.speed = 0
                         self.pos = Station.stations[self.station_index].pos
@@ -138,7 +143,7 @@ class Train():
         # self.text_train.set_x(self.pos-self.width/4)
         # self.text_train.set_text(str(len(self.passenger)))
         # self.text_train.set_text(str(self.speed/1000*3600))
-    
+
     def draw(self,screen,train_img,offset):
         if offset+40-68+self.pos/scale > -400 and offset+40-68+self.pos/scale < 1280:
             screen.blit(train_img,(offset+40-68+self.pos/scale,self.pos_y))
