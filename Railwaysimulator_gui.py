@@ -13,7 +13,7 @@ from Train import Train
 
 
 class RailwaySimulation(tk.Frame):
-    def __init__(self, master,width=1024,height=768):
+    def __init__(self, master,width=1024,height=200):
         super().__init__(master)
         self.master = master
         self.width = width
@@ -58,14 +58,17 @@ class RailwaySimulation(tk.Frame):
         self.station_frame = ttk.Frame(self.notebook)
         self.notebook.add(self.station_frame,text='Station')
 
+        self.minimap_frame = ttk.Frame(self.notebook)
+        self.notebook.add(self.minimap_frame,text='Map')
+
         #########################################
         ######   Railway Monitor Screen    ######
         #########################################
         self.monitor_Frame = ttk.Frame(self,height=768)
         self.monitor_Frame.pack(fill=tk.X)
         # os.environ['SDL_WINDOWID'] = str(self.monitor_Frame.winfo_id())
-        os.environ['SDL_VIDEODRIVER'] = 'x11'
-        os.environ['SDL_VIDEODRIVER'] = 'windib'
+        # os.environ['SDL_VIDEODRIVER'] = 'x11'
+        # os.environ['SDL_VIDEODRIVER'] = 'windib'
         self.master.bind("<Left>", self.dispatch_left_to_pygame)
         self.master.bind("<Right>", self.dispatch_right_to_pygame)
         self.isRun = False
@@ -134,13 +137,17 @@ class RailwaySimulation(tk.Frame):
         self.position_label.grid(row=2,column=0,padx=4,pady=4)
         self.arrivalrate_label = ttk.Label(self.station_frame,text='Arrival Rate')
         self.arrivalrate_label.grid(row=3,column=0,padx=4,pady=4)
+        self.graph_label = ttk.Label(self.station_frame,text='Graph Results')
+        self.graph_label.grid(row=4,column=0,padx=4,pady=4)
 
         self.name_var = []
         self.position_var = []
         self.arrivalrate_var = []
+        self.graph_var = []
         self.name_entry = []
         self.position_entry = []
         self.arrivalrate_entry = []
+        self.graph_check = []
         self.no_station = int(self.numberStation.get())
         for i in range(self.no_station):
             self.name_var.append(tk.StringVar(value=name[i]))
@@ -155,25 +162,53 @@ class RailwaySimulation(tk.Frame):
             self.arrivalrate_entry.append(ttk.Entry(self.station_frame,textvariable=self.arrivalrate_var[-1],font=('Verdana',14),width=4))
             self.arrivalrate_entry[-1].grid(row=3,column=1+i,padx=4,pady=4)
 
-        # self.arrivalrate_label = ttk.Label(self.station_frame,text='Arrival Rate')
-        # self.arrivalrate_label.grid(row=0,column=0,padx=4,pady=4)
-        # self.arrivalrate = tk.StringVar(value='0.1')
-        # self.arrivalrate_entry = ttk.Entry(self.station_frame,textvariable=self.arrivalrate,font=('Verdana',16),width=5)
-        # self.arrivalrate_entry.grid(row=0,column=1,padx=4,pady=4)
-        # self.arrivalrate_unit = ttk.Label(self.station_frame,text='arrival/s')
-        # self.arrivalrate_unit.grid(row=0,column=2,padx=4,pady=4)
+            self.graph_var.append(tk.BooleanVar())
+            self.graph_check.append(ttk.Checkbutton(self.station_frame,variable=self.graph_var[-1]))
+            self.graph_check[-1].grid(row=4,column=1+i,padx=4,pady=4)
+        
+        ###### Minimap Parameter ######
+        self.minimap = tk.Canvas(self.minimap_frame,height = 150)
+        self.minimap.pack(fill=tk.X)
+        self.minimap.create_line(50,55,950,55,width=5,fill='limegreen')
+        self.minimap.create_line(50,65,950,65,width=5,fill='forestgreen')
+        self.minimap_oval = []
+        self.minimap_text = []
+        self.minimap_train = []
+        for i in range(self.no_station):           
+            x = 50 + i*900/(self.no_station-1)
+            self.minimap_oval.append(self.minimap.create_oval(x-10,50,x+10,70,fill='khaki',outline='maroon',width=3))
+            name_str = name[i].split(' ')
+            for j in range(len(name_str)):
+                self.minimap_text.append(self.minimap.create_text(x,85+j*12,text=name_str[j]))
+        self.minimap.bind("<Button-1>", self.gotoStation)
+    
+    def gotoStation(self,event):
+        if event.y > 50 and event.y < 70 and self.isRun:
+            for i in range(self.no_station):
+                x = 50 + i*900/(self.no_station-1)
+                if event.x > x-10 and event.x < x+10:
+                    self.offset = -Station.stations[i].pos +100
 
     def set_station(self):
         for i in range(len(self.name_var)):
             self.name_entry[i].destroy()
             self.position_entry[i].destroy()
             self.arrivalrate_entry[i].destroy()
+            self.graph_check[i].destroy()
+
+        for i in self.minimap_oval:
+            self.minimap.delete(i)
+        for i in self.minimap_text:
+            self.minimap.delete(i)
+
         self.name_var = []
         self.position_var = []
         self.arrivalrate_var = []
+        self.graph_var = []
         self.name_entry = []
         self.position_entry = []
         self.arrivalrate_entry = []
+        self.graph_check = []
         self.no_station = int(self.numberStation.get())
         for i in range(self.no_station):
             self.name_var.append(tk.StringVar())
@@ -187,6 +222,14 @@ class RailwaySimulation(tk.Frame):
             self.arrivalrate_var.append(tk.StringVar(value=str(0.1)))
             self.arrivalrate_entry.append(ttk.Entry(self.station_frame,textvariable=self.arrivalrate_var[-1],font=('Verdana',14),width=4))
             self.arrivalrate_entry[-1].grid(row=3,column=1+i,padx=4,pady=4)
+
+            self.graph_var.append(tk.BooleanVar())
+            self.graph_check.append(ttk.Checkbutton(self.station_frame,variable=self.graph_var[-1]))
+            self.graph_check[-1].grid(row=4,column=1+i,padx=4,pady=4)
+
+            x = 50 + i*900/(self.no_station-1)
+            self.minimap_oval.append(self.minimap.create_oval(x-10,50,x+10,70,fill='khaki',outline='maroon',width=3))
+
 
     def dispatch_left_to_pygame(self,event):
         if self.isRun:
@@ -212,8 +255,8 @@ class RailwaySimulation(tk.Frame):
         pygame.init()
         pygame.display.set_caption("Train Simulator")
 
-        screen = pygame.display.set_mode((1024,768))
-        offset = 0
+        screen = pygame.display.set_mode((1024,700))
+        self.offset = 0
 
         train_img = pygame.image.load('img/train.png').convert()
         train_img.set_colorkey((253,236,166))
@@ -257,38 +300,60 @@ class RailwaySimulation(tk.Frame):
 
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_LEFT:
-                        shift_speed = 2
-                        offset += 5
+                        shift_speed = 10
+                        # self.offset += 5
                     if event.key == pygame.K_RIGHT:
-                        offset += -5
+                        shift_speed = -10
+                        # self.offset += -5
                     
                     if event.key == pygame.K_ESCAPE:
                         running = False
                 
-                # if event.type == pygame.KEYUP:
-                #     shift_speed = 0
+                if event.type == pygame.KEYUP:
+                    shift_speed = 0
 
-            # if shift_speed != 0:
-            #     offset += shift_speed
+            if shift_speed != 0:
+                self.offset += shift_speed
 
             screen.fill((255,255,255))
-            screen.blit(sky_img,(0-20+offset*0.03,0))
+            screen.blit(sky_img,(0-20+self.offset*0.03,0))
 
             Depot.start.update(current_sim_time)
             Depot.end.update(current_sim_time)
 
             for i in range(self.no_station):
                 Station.stations[i].update_platform(current_sim_time)
-                Station.stations[i].draw(screen,offset)
+                Station.stations[i].draw(screen,self.offset)
+
+            for i in self.minimap_train:
+                self.minimap.delete(i)
 
             for train in trains:
                 r = train.update_train(current_sim_time)
                 if r == 'park':
                     trains.remove(train)
                 else:
-                    train.draw(screen,train_img,offset)
+                    train.draw(screen,train_img,self.offset)
 
-            draw_railway(screen,offset)
+                    if train.state == 'stop' or \
+                        (train.station_index == 0 and train.railway == 1) or\
+                        (train.station_index == 12 and train.railway == 0):
+                        x = 50+900/(self.no_station-1)*train.station_index
+                    else:
+                        x2 = Station.stations[train.station_index].pos
+                        if train.railway == 0:
+                            x1 = Station.stations[train.station_index+1].pos
+                            x = 50+900/(self.no_station-1)*(train.station_index+1-(train.pos-x1)/(x2-x1))
+                        else:
+                            x1 = Station.stations[train.station_index-1].pos
+                            x = 50+900/(self.no_station-1)*(train.station_index-1+(train.pos-x1)/(x2-x1))
+                    if train.railway == 0:
+                        y = 65
+                    else:
+                        y = 55
+                    self.minimap_train.append(self.minimap.create_line(x-10,y,x+10,y,width=8,fill='midnightblue'))
+
+            draw_railway(screen,self.offset)
 
             pygame.display.update()
 
@@ -313,23 +378,14 @@ class RailwaySimulation(tk.Frame):
         # plt.legend(['Arrivals','Departures'])
 
         linestyles = 5*['-']+5*['--']+5*['-.']+5*[':']
-        plt.figure('Queue Platform 1')
-        legend = []
-        i = 0
-        for s in Station.stations:
-            plt.plot(range(len(s.queues_0)),s.queues_0,linestyle=linestyles[i])
-            i = i + 1
-            legend.append(s.name)
-        plt.legend(legend)
-
-        plt.figure('Queue Platform 2')
-        legend = []
-        i = 0
-        for s in Station.stations:
-            plt.plot(range(len(s.queues_1)),s.queues_1,linestyle=linestyles[i])
-            i = i + 1
-            legend.append(s.name)
-        plt.legend(legend)
+        for i,s in enumerate(Station.stations):
+            print(self.graph_var[i].get())
+            if self.graph_var[i].get():
+                plt.figure(s.name)
+                plt.plot(range(len(s.queues_1)),s.queues_1,linestyle=linestyles[i])
+                plt.plot(range(len(s.queues_0)),s.queues_0,linestyle=linestyles[i])
+                legend = ['Platform 1','Platform 2']
+                plt.legend(legend)
         plt.show()
 
 simulation_Window = RailwaySimulation(tk.Tk())
