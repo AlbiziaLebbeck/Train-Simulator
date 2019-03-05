@@ -90,4 +90,4 @@ class Station():
             text = self.font.render(str(len(self.platform1)), True, (0, 128, 0))
             screen.blit(text,(offset+40-40+self.pos/scale, 350))
             text = self.font.render(str(len(self.platform0)), True, (0, 128, 0))
-            screen.blit(text,(offset+40-40+self.pos/scale, 450))
+            screen.blit(text,(offset+40-40+self.pos/scale, 430))

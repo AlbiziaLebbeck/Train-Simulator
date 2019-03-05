@@ -13,7 +13,7 @@ from Train import Train
 
 
 class RailwaySimulation(tk.Frame):
-    def __init__(self, master,width=1024,height=200):
+    def __init__(self, master,width=1024,height=250):
         super().__init__(master)
         self.master = master
         self.width = width
@@ -64,13 +64,13 @@ class RailwaySimulation(tk.Frame):
         #########################################
         ######   Railway Monitor Screen    ######
         #########################################
-        self.monitor_Frame = ttk.Frame(self,height=768)
-        self.monitor_Frame.pack(fill=tk.X)
+        # self.monitor_Frame = ttk.Frame(self,height=768)
+        # self.monitor_Frame.pack(fill=tk.X)
         # os.environ['SDL_WINDOWID'] = str(self.monitor_Frame.winfo_id())
         # os.environ['SDL_VIDEODRIVER'] = 'x11'
         # os.environ['SDL_VIDEODRIVER'] = 'windib'
-        self.master.bind("<Left>", self.dispatch_left_to_pygame)
-        self.master.bind("<Right>", self.dispatch_right_to_pygame)
+        # self.master.bind("<Left>", self.dispatch_left_to_pygame)
+        # self.master.bind("<Right>", self.dispatch_right_to_pygame)
         self.isRun = False
 
         ###### Train Parameter ######
@@ -187,7 +187,7 @@ class RailwaySimulation(tk.Frame):
             for i in range(self.no_station):
                 x = 50 + i*900/(self.no_station-1)
                 if event.x > x-10 and event.x < x+10:
-                    self.offset = -Station.stations[i].pos +100
+                    self.offset = -Station.stations[i].pos +450
 
     def set_station(self):
         for i in range(len(self.name_var)):
@@ -231,14 +231,14 @@ class RailwaySimulation(tk.Frame):
             self.minimap_oval.append(self.minimap.create_oval(x-10,50,x+10,70,fill='khaki',outline='maroon',width=3))
 
 
-    def dispatch_left_to_pygame(self,event):
-        if self.isRun:
-            pgEvent = pygame.event.Event(pygame.KEYDOWN,{'key':pygame.K_LEFT})
-            pygame.event.post(pgEvent)
-    def dispatch_right_to_pygame(self,event):
-        if self.isRun:
-            pgEvent = pygame.event.Event(pygame.KEYDOWN,{'key':pygame.K_RIGHT})
-            pygame.event.post(pgEvent)
+    # def dispatch_left_to_pygame(self,event):
+    #     if self.isRun:
+    #         pgEvent = pygame.event.Event(pygame.KEYDOWN,{'key':pygame.K_LEFT})
+    #         pygame.event.post(pgEvent)
+    # def dispatch_right_to_pygame(self,event):
+    #     if self.isRun:
+    #         pgEvent = pygame.event.Event(pygame.KEYDOWN,{'key':pygame.K_RIGHT})
+    #         pygame.event.post(pgEvent)
 
     def run_simulation(self):
         self.isRun = True
@@ -339,6 +339,10 @@ class RailwaySimulation(tk.Frame):
                         (train.station_index == 0 and train.railway == 1) or\
                         (train.station_index == 12 and train.railway == 0):
                         x = 50+900/(self.no_station-1)*train.station_index
+                    elif train.station_index >= self.no_station and train.railway == 1:
+                        x = 50+900
+                    elif train.station_index <= -1 and train.railway == 0:
+                        x = 50
                     else:
                         x2 = Station.stations[train.station_index].pos
                         if train.railway == 0:
