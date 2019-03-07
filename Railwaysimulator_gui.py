@@ -46,6 +46,8 @@ class RailwaySimulation(tk.Frame):
         ttk.Label(self.run_frame,textvariable=self.curtime,font=('Verdana',16)).pack(side=tk.RIGHT,padx=4,pady=4)
         ttk.Label(self.run_frame,text="Time:",font=('Verdana',16)).pack(side=tk.RIGHT,padx=4,pady=4)
 
+        self.logo_img = tk.PhotoImage(file="img/logo.png").subsample(3)
+
         #########################################
         ###### Notebook for parameter edit ######
         #########################################
@@ -60,6 +62,9 @@ class RailwaySimulation(tk.Frame):
 
         self.minimap_frame = ttk.Frame(self.notebook)
         self.notebook.add(self.minimap_frame,text='Map')
+
+        #self.about_frame = ttk.Frame(self.notebook)
+        #self.notebook.add(self.about_frame,text='About')
 
         #########################################
         ######   Railway Monitor Screen    ######
@@ -122,6 +127,9 @@ class RailwaySimulation(tk.Frame):
         self.trainStop_unit = ttk.Label(self.train_frame,text='Minutes')
         self.trainStop_unit.grid(row=1,column=5,padx=4,pady=4)
 
+        self.logo_label1 = tk.Label(self.train_frame, image=self.logo_img)
+        self.logo_label1.grid(row=0,rowspan=3,column=6,padx=150,pady=10)
+
         ###### Station Parameter ######
         self.numberStation_label = ttk.Label(self.station_frame,text='Number of Stations')
         self.numberStation_label.grid(row=0,column=0,padx=4,pady=4)
@@ -181,6 +189,10 @@ class RailwaySimulation(tk.Frame):
             for j in range(len(name_str)):
                 self.minimap_text.append(self.minimap.create_text(x,85+j*12,text=name_str[j]))
         self.minimap.bind("<Button-1>", self.gotoStation)
+
+        ###### About Parameter ######
+        #self.logo_label2 = tk.Label(self.about_frame, image=self.logo_img)
+        #self.logo_label2.pack(side="left")
     
     def gotoStation(self,event):
         if event.y > 50 and event.y < 70 and self.isRun:
@@ -211,11 +223,11 @@ class RailwaySimulation(tk.Frame):
         self.graph_check = []
         self.no_station = int(self.numberStation.get())
         for i in range(self.no_station):
-            self.name_var.append(tk.StringVar())
+            self.name_var.append(tk.StringVar(value='Station '+str(i+1)))
             self.name_entry.append(ttk.Entry(self.station_frame,textvariable=self.name_var[-1],font=('Verdana',14),width=4))
             self.name_entry[-1].grid(row=1,column=1+i,padx=4,pady=4)
 
-            self.position_var.append(tk.StringVar())
+            self.position_var.append(tk.StringVar(value=i*500))
             self.position_entry.append(ttk.Entry(self.station_frame,textvariable=self.position_var[-1],font=('Verdana',14),width=4))
             self.position_entry[-1].grid(row=2,column=1+i,padx=4,pady=4)
 
@@ -229,6 +241,9 @@ class RailwaySimulation(tk.Frame):
 
             x = 50 + i*900/(self.no_station-1)
             self.minimap_oval.append(self.minimap.create_oval(x-10,50,x+10,70,fill='khaki',outline='maroon',width=3))
+            name_str = ['Station',str(i+1)]
+            for j in range(len(name_str)):
+                self.minimap_text.append(self.minimap.create_text(x,85+j*12,text=name_str[j]))
 
 
     # def dispatch_left_to_pygame(self,event):
@@ -254,6 +269,7 @@ class RailwaySimulation(tk.Frame):
 
         pygame.init()
         pygame.display.set_caption("Train Simulator")
+        pygame.display.set_icon(pygame.image.load('img/logo.ico'))
 
         screen = pygame.display.set_mode((1024,700))
         self.offset = 0
@@ -337,7 +353,7 @@ class RailwaySimulation(tk.Frame):
 
                     if train.state == 'stop' or \
                         (train.station_index == 0 and train.railway == 1) or\
-                        (train.station_index == 12 and train.railway == 0):
+                        (train.station_index == self.no_station-1 and train.railway == 0):
                         x = 50+900/(self.no_station-1)*train.station_index
                     elif train.station_index >= self.no_station and train.railway == 1:
                         x = 50+900
@@ -345,6 +361,7 @@ class RailwaySimulation(tk.Frame):
                         x = 50
                     else:
                         x2 = Station.stations[train.station_index].pos
+                        print(train.station_index)
                         if train.railway == 0:
                             x1 = Station.stations[train.station_index+1].pos
                             x = 50+900/(self.no_station-1)*(train.station_index+1-(train.pos-x1)/(x2-x1))
