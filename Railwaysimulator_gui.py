@@ -265,7 +265,7 @@ class RailwaySimulation(tk.Frame):
 
         Station.stations = []
         for i in range(self.no_station):
-            Station.stations.append(Station(i,int(self.position_var[i].get())+200,self.name_var[i].get(),float(self.arrivalrate_var[i].get())))
+            Station.stations.append(Station(i,int(self.position_var[i].get())+400,self.name_var[i].get(),float(self.arrivalrate_var[i].get())))
 
         trains = []
         Train.capacity = int(self.trainCapacity.get())
@@ -274,13 +274,13 @@ class RailwaySimulation(tk.Frame):
         Train.stop_time = int(self.trainStop.get())*60
 
         Depot.start = Depot(int(self.trainDuration.get()),trains,0,type='start')
-        Depot.end = Depot(int(self.trainDuration.get()),trains,(int(self.position_var[-1].get())+400),type='end')
+        Depot.end = Depot(int(self.trainDuration.get()),trains,(int(self.position_var[-1].get())+1000),type='end')
 
         def draw_railway(screen,offset):
             railway = pygame.image.load('img/railway.png').convert()
             railway.set_colorkey((255,255,255))
 
-            for i in range(int((int(self.position_var[-1].get())+400)/scale/200)+1):
+            for i in range(-1,int((int(self.position_var[-1].get())+400)/scale/200)+5):
                 if offset+40+200*i >= 1280:
                     break
                 if offset+40+200*i > -200 and offset+40+200*i < 1280:
@@ -357,6 +357,8 @@ class RailwaySimulation(tk.Frame):
                         y = 55
                     self.minimap_train.append(self.minimap.create_line(x-10,y,x+10,y,width=8,fill='midnightblue'))
 
+            Depot.start.draw(screen,self.offset)
+            Depot.end.draw(screen,self.offset)
             draw_railway(screen,self.offset)
 
             pygame.display.update()

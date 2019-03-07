@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from Settings import *
 from Train import Train
+import pygame
 
 class Depot():
     start = None
@@ -45,5 +46,15 @@ class Depot():
 
             # self.text_train_park.set_text(str(self.num_train))
 
-    def draw(self,screen):
-        pass
+    def draw(self,screen,offset):
+        im = pygame.image.load('img/depot.png').convert()
+        im.set_colorkey((0,0,0))
+        screen.blit(im,(offset+self.pos-158,370)) 
+        screen.blit(im,(offset+self.pos-59,370)) 
+        screen.blit(im,(offset+self.pos+40,370))     
+        screen.blit(im,(offset+self.pos+139,370))  
+
+        screen.blit(im,(offset+self.pos-158,450)) 
+        screen.blit(im,(offset+self.pos-59,450)) 
+        screen.blit(im,(offset+self.pos+40,450))     
+        screen.blit(im,(offset+self.pos+139,450))         
