@@ -378,12 +378,22 @@ class RailwaySimulation(tk.Frame):
             simulation_Window.update()
 
         self.isRun = False
-        # plt.figure('Passenger')
-        # plt.plot(range(len(arrivals)),arrivals)
-        # plt.plot(range(len(departures)),departures)
-        # plt.legend(['Arrivals','Departures'])
 
         linestyles = 5*['-']+5*['--']+5*['-.']+5*[':']
+        legend = []
+        plt.figure('All Station Platform 1')
+        for i,s in enumerate(Station.stations):
+            if self.graph_var[i].get():
+                legend.append(s.name)
+                plt.plot(range(len(s.queues_1)),s.queues_1,linestyle=linestyles[i])
+        plt.legend(legend)
+        
+        plt.figure('All Station Platform ')
+        for i,s in enumerate(Station.stations):
+            if self.graph_var[i].get():
+                plt.plot(range(len(s.queues_0)),s.queues_0,linestyle=linestyles[i])
+        plt.legend(legend)
+
         for i,s in enumerate(Station.stations):
             print(self.graph_var[i].get())
             if self.graph_var[i].get():
