@@ -429,10 +429,10 @@ class RailwaySimulation(tk.Frame):
                     plt.legend(legend)
             plt.show()
 
-            del Station.stations[:]
-            del Train[:]
-            del Depot.start
-            del Depot.end
+        del Station.stations[:]
+        del Train[:]
+        del Depot.start
+        del Depot.end
 
 simulation_Window = RailwaySimulation(tk.Tk())
 simulation_Window.mainloop()
