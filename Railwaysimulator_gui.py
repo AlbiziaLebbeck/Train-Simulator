@@ -344,7 +344,7 @@ class RailwaySimulation(tk.Frame):
             Depot.end.update(current_sim_time)
 
             for i in range(self.no_station):
-                Station.stations[i].update_platform(current_sim_time)
+                Station.stations[i].update_platform(current_sim_time,self.graph_var[i].get())
                 Station.stations[i].draw(screen,self.offset)
 
             for i in self.minimap_train:
@@ -430,6 +430,9 @@ class RailwaySimulation(tk.Frame):
             plt.show()
 
             del Station.stations[:]
+            del Train[:]
+            del Depot.start
+            del Depot.end
 
 simulation_Window = RailwaySimulation(tk.Tk())
 simulation_Window.mainloop()

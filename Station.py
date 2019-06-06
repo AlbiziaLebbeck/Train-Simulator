@@ -51,8 +51,14 @@ class Station():
         # rectangle_platform1 = plt.Rectangle((pos-self.width/2, 40), self.width, 5, color='salmon')
         # ax.add_patch(rectangle_platform1)
         # self.text_platform1 = ax.text(pos-self.width/4,41,str(self.platform1),fontsize=15)
+    
+    def __del__(self): 
+        del self.queues_0[:]
+        del self.queues_1[:]
+        del self.platform0[:]
+        del self.platform1[:]
 
-    def update_platform(self,current_time):
+    def update_platform(self,current_time,keep_data):
         if(current_time >= self.inter_arrival_time0 and self.id > 0):
             self.platform0.append(Passenger(self.id,0))
             self.inter_arrival_time0 = current_time + np.random.exponential(1/self.arrival_rate)
@@ -67,9 +73,9 @@ class Station():
 
         # self.departures_0.append(self.departure_0)
         # self.departures_1.append(self.departure_1)
-
-        self.queues_0.append(len(self.platform0))
-        self.queues_1.append(len(self.platform1))
+        if keep_data:
+            self.queues_0.append(len(self.platform0))
+            self.queues_1.append(len(self.platform1))
 
 
         # self.text_platform0.set_text(str(len(self.platform0)))

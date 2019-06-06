@@ -48,6 +48,9 @@ class Train():
         # ax.add_patch(self.rectangle_train)
         # self.text_train = ax.text(self.pos-self.width/4,pos_y+1,str(self.speed),fontsize=15)
     
+    def __del__(self): 
+        del self.passenger[:]
+    
     def update_train(self,current_time):
         if self.state == "stop":
             if current_time >= self.entrance_time and current_time <= self.closing_time and len(self.passenger) < self.capacity:
