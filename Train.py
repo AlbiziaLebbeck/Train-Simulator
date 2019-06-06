@@ -8,10 +8,10 @@ class Train():
     accel = 6*1000/3600
     capacity = 400
     stop_time = 300
+    door_time = 1
+    passenger_time = 1
 
     def __init__(self,railway,destination,capacity = 400,max_speed=60,station_index=-1):
-        self.door_time = 1
-        self.passenger_time = 1
         # self.stop_time = self.passenger_time*self.capacity+2*self.door_time
         self.destination = destination
 

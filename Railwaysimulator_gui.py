@@ -127,6 +127,14 @@ class RailwaySimulation(tk.Frame):
         self.trainStop_unit = ttk.Label(self.train_frame,text='Minutes')
         self.trainStop_unit.grid(row=1,column=5,padx=4,pady=4)
 
+        self.trainWalking_label = ttk.Label(self.train_frame,text='Walking times')
+        self.trainWalking_label.grid(row=2,column=3,padx=4,pady=4)
+        self.trainWalking = tk.StringVar(value='1')
+        self.trainWalking_entry = ttk.Entry(self.train_frame,textvariable=self.trainWalking,font=('Verdana',16),width=5)
+        self.trainWalking_entry.grid(row=2,column=4,padx=4,pady=4)
+        self.trainWalking_unit = ttk.Label(self.train_frame,text='Second')
+        self.trainWalking_unit.grid(row=2,column=5,padx=4,pady=4)
+
         self.logo_label1 = tk.Label(self.train_frame, image=self.logo_img)
         self.logo_label1.grid(row=0,rowspan=3,column=6,padx=150,pady=10)
 
@@ -294,6 +302,7 @@ class RailwaySimulation(tk.Frame):
         Train.max_speed = int(self.trainSpeed.get())*1000/3600
         Train.accel = int(self.trainAcceleration.get())*1000/3600
         Train.stop_time = int(self.trainStop.get())*60
+        Train.passenger_time = float(self.trainWalking.get())
 
         Depot.start = Depot(int(self.trainDuration.get()),trains,0,type='start')
         Depot.end = Depot(int(self.trainDuration.get()),trains,(int(self.position_var[-1].get())+1000),type='end')
@@ -387,11 +396,11 @@ class RailwaySimulation(tk.Frame):
             pygame.display.update()
 
             print("time:"+str(current_sim_time))
-            current_sim_time = current_sim_time + 1    
+            current_sim_time = current_sim_time + 0.5   
 
-            hh = current_sim_time//3600
-            mm = (current_sim_time%3600)//60
-            ss =  current_sim_time%60
+            hh = int(current_sim_time)//3600
+            mm = (int(current_sim_time)%3600)//60
+            ss =  int(current_sim_time)%60
 
             current_sim_time_str = '{0:02d}:{1:02d}:{2:02d}'.format(hh,mm,ss)
             self.curtime.set(current_sim_time_str)
