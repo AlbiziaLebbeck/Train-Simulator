@@ -280,8 +280,14 @@ class RailwaySimulation(tk.Frame):
         sky_img = pygame.image.load('img/sky.png').convert()
 
         Station.stations = []
+        for i in self.minimap_text:
+            self.minimap.delete(i)
         for i in range(self.no_station):
             Station.stations.append(Station(i,int(self.position_var[i].get())+400,self.name_var[i].get(),float(self.arrivalrate_var[i].get())))
+            x = 50 + i*900/(self.no_station-1)
+            name_str = self.name_var[i].get().split(' ')
+            for j in range(len(name_str)):
+                self.minimap_text.append(self.minimap.create_text(x,85+j*12,text=name_str[j]))
 
         trains = []
         Train.capacity = int(self.trainCapacity.get())
