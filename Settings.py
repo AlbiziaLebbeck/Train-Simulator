@@ -2,11 +2,16 @@ simulation_time = 10000
 show_speed = 1
 
 distance = 1000
-### BTS Silom line
+# ### BTS Silom line
 distance = [0]+[200,694,1356,2489,3055,3821,4496,5580,6255,7129,8061,8749,9907,10107] 
 name = ['National Stadium','Siam','Ratchadamri','Sala Daeng','Chong Nonsi','Surasak'\
     ,'Saphan Taksin','Krung Thonburi','Wongwian Yai','Pho Nimit'\
     ,'Talat Phlu','Wutthakat','Bang Wa']
+
+### MRT Blue line
+#distance = [0]+[200,1600,2900,4160,5500,6500,7620,7820] 
+#name = ['Lak Song','Bang Khae','Phasi Charoen','Phetkasem48','Bang Wa','Bang Phai','Tha Phra']
+
 arrival_rate = [0.1 for i in range(len(name))]
 
 ### BTS Sukhumvit

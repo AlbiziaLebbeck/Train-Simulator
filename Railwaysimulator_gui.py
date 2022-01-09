@@ -279,7 +279,7 @@ class RailwaySimulation(tk.Frame):
         pygame.display.set_caption("Train Simulator")
         pygame.display.set_icon(pygame.image.load('img/logo.ico'))
 
-        screen = pygame.display.set_mode((1024,700))
+        screen = pygame.display.set_mode((1280,700),pygame.HWSURFACE|pygame.DOUBLEBUF)
         self.offset = 0
 
         train_img = pygame.image.load('img/train.png').convert()
@@ -439,7 +439,7 @@ class RailwaySimulation(tk.Frame):
             plt.show()
 
         del Station.stations[:]
-        del Train[:]
+        #del Train[:]
         del Depot.start
         del Depot.end
 
